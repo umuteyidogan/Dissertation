@@ -337,7 +337,7 @@ predicted_values = {
 predicted_df = pd.DataFrame(predicted_values)
 
 # Sort by predicted market value in descending order
-predicted_df = predicted_df.sort_values(by="Predicted Market Value (EUR)", ascending=False)
+predicted_df = predicted_df.sort_values(by="Predicted Market Value (EUR) (Normalized)", ascending=False)
 
 # Display the table
 st.table(predicted_df)
