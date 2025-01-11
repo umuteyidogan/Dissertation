@@ -11,16 +11,12 @@ import os
 
 # Function to load player images
 def get_player_image(player_id, image_dir="Bristol_City_Player_Pics"):
-    """
-    Retrieve player image based on player_id.
-    If the image is not found, return a placeholder.
-    """
     image_path = os.path.join(image_dir, f"{player_id}.jpg")
     if os.path.exists(image_path):
         return Image.open(image_path)
     else:
         # Return a placeholder image if the player's image is missing
-        return Image.open("placeholder.jpg")  # Ensure "placeholder.jpg" exists 
+        return Image.open("placeholder.jpg")  
 
 # Load Data
 starting_11 = pd.read_csv("bristol_city_starting_11.csv")
@@ -143,11 +139,11 @@ import json
 
 # Load GeoJSON data from an online source
 url = "https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson"
-world = gpd.read_file(url)  # Directly pass the URL to read GeoJSON data
+world = gpd.read_file(url)  
 
 # Merge player data with world GeoJSON data (if needed for further customization)
 fig = px.scatter_geo(
-    filtered_data,  # Corrected the data source to use filtered_data directly
+    filtered_data,  
     lat="latitude", 
     lon="longitude", 
     hover_name="short_name",
@@ -181,7 +177,7 @@ fig.add_trace(go.Scatter(
     y=starting_11_data["y_position"],
     mode="markers+text",
     marker=dict(size=12, color="blue"),
-    text=starting_11_data["short_name"],  # Player names
+    text=starting_11_data["short_name"], 
     textposition="top center",
     hovertemplate=(
         "<b>%{text}</b><br>" +
@@ -198,7 +194,7 @@ fig.update_layout(
     yaxis=dict(visible=False),
     height=500,
     width=800,
-    plot_bgcolor="green",  # Green pitch background
+    plot_bgcolor="green", 
     showlegend=False
 )
 
@@ -264,8 +260,8 @@ fig.add_trace(go.Scatterpolar(
     theta=attributes,
     fill='toself',
     name=player_1,
-    line=dict(color='blue', dash='solid'),  # Blue solid line
-    fillcolor='rgba(0, 112, 255, 0.3)'  # Semi-transparent blue fill
+    line=dict(color='blue', dash='solid'),  
+    fillcolor='rgba(0, 112, 255, 0.3)' 
 ))
 
 # Add player 2 data with color-blind-friendly color
@@ -274,8 +270,8 @@ fig.add_trace(go.Scatterpolar(
     theta=attributes,
     fill='toself',
     name=player_2,
-    line=dict(color='orange', dash='dash'),  # Orange dashed line
-    fillcolor='rgba(255, 165, 0, 0.3)'  # Semi-transparent orange fill
+    line=dict(color='orange', dash='dash'),  
+    fillcolor='rgba(255, 165, 0, 0.3)'  
 ))
 
 # Update layout
@@ -283,7 +279,7 @@ fig.update_layout(
     polar=dict(
         radialaxis=dict(
             visible=True,
-            range=[0, 100]  # Assuming attribute values are in the range 0-100
+            range=[0, 100]  
         )
     ),
     showlegend=True
@@ -327,6 +323,42 @@ attribute_cols = ["pace", "shooting", "passing", "dribbling", "defending", "phys
 attribute_data = filtered_data[attribute_cols]
 fig = px.imshow(attribute_data.corr(), text_auto=True)
 st.plotly_chart(fig)
+
+# Top 5 Players Based on Predicted Market Value
+st.markdown("### Top 5 Players with the Highest Potential")
+
+
+predicted_values = {
+    "Player": ["R. Dickie", "R. Atkinson", "A. Weimann", "K. Naismith", "R. McCrorie"],
+    "Predicted Market Value (EUR) (Normalized)": [0.010944, 0.010854, 0.007723, 0.007086, 0.009978]
+}
+
+# Convert the data to a DataFrame
+predicted_df = pd.DataFrame(predicted_values)
+
+# Sort by predicted market value in descending order
+predicted_df = predicted_df.sort_values(by="Predicted Market Value (EUR)", ascending=False)
+
+# Display the table
+st.table(predicted_df)
+
+
+st.markdown(
+    """
+    *Note: The predicted market values are normalized and may not directly correspond to actual market values. These predictions are based on the machine learning model.*
+    """
+)
+
+# Disclaimer about gambling
+st.markdown(
+    """
+    **Disclaimer:**  
+    The data and predictions provided in this dashboard are intended for educational and informational purposes only.  
+    They are not to be used for gambling or betting purposes.  
+    Any misuse of this information is strictly discouraged, and the creators of this dashboard do not endorse or support gambling activities.
+    """
+)
+
 
 
 
